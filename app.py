@@ -19,10 +19,10 @@ st.set_page_config(
 # Title and description
 st.title("🌍 TradeXchange AI - Text-to-SQL Demo")
 st.markdown("""
-Ask questions about **Logistics Performance Index (LPI)** data in natural language.
-The AI will convert your question to SQL and display the results.
+    Ask questions about **Logistics Performance Index (LPI)** data in natural language.
+    The AI will convert your question to SQL and display the results.
 
-詢問關於**物流績效指數（LPI）**資料的問題，AI 會將您的問題轉換為 SQL 並顯示結果。
+    詢問關於**物流績效指數（LPI）**資料的問題，AI 會將您的問題轉換為 SQL 並顯示結果。
 """)
 
 # Sidebar with example queries
@@ -141,4 +141,4 @@ st.markdown("""
     TradeXchange AI Assessment | Vance
     </small>
 </div>
-""", unsafe_allow_h
+""", unsafe_allow_html=True)
