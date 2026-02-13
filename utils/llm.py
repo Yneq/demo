@@ -11,16 +11,7 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 
 def call_llm(prompt: str, model: str = "anthropic/claude-3.5-sonnet") -> Optional[str]:
-    """
-    Call OpenRouter LLM to convert text to SQL.
-    
-    Args:
-        prompt: The prompt containing the question
-        model: Model to use (default: Claude 3.5 Sonnet)
-    
-    Returns:
-        Generated SQL query or None if error
-    """
+
     try:
         headers = {
             "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -36,7 +27,11 @@ def call_llm(prompt: str, model: str = "anthropic/claude-3.5-sonnet") -> Optiona
             "max_tokens": 500
         }
         
-        response = requests.post(OPENROUTER_URL, headers=headers, json=data, timeout=20)
+        response = requests.post(OPENROUTER_URL,
+            headers=headers,
+            json=data,
+            timeout=30
+        )
         response.raise_for_status()
         
         result = response.json()

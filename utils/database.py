@@ -58,35 +58,28 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # 2. Clean lpi_score (CRITICAL)
     if 'lpi_score' in df.columns:
         def parse_lpi_score(value):
-            """Convert LPI score to float, handling text values."""
-            if pd.isna(value):
-                return None
-            
-            # Already numeric
-            if isinstance(value, (int, float)):
-                return float(value)
-            
-            # String value
             if isinstance(value, str):
                 value = value.lower().strip()
                 
-                # Handle "three point six" format
+                # 建立統一的數字對照表（全部存為整數）
                 text_to_num = {
-                    'zero': 0.0, 'one': 1.0, 'two': 2.0, 'three': 3.0, 
-                    'four': 4.0, 'five': 5.0,
-                    'six': 0.6, 'seven': 0.7, 'eight': 0.8, 'nine': 0.9
+                    'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
+                    'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9
                 }
                 
                 if 'point' in value:
                     parts = value.split('point')
                     if len(parts) == 2:
-                        whole = parts[0].strip()
-                        decimal = parts[1].strip()
+                        whole_str = parts[0].strip()
+                        decimal_str = parts[1].strip()
                         
-                        whole_num = text_to_num.get(whole, 0)
-                        decimal_num = text_to_num.get(decimal, 0)
+                        # 取得整數值 (例如 "six" -> 6)
+                        whole_val = text_to_num.get(whole_str, 0)
                         
-                        return whole_num + decimal_num
+                        # 取得小數值並除以 10 (例如 "three" -> 3 -> 0.3)
+                        decimal_val = text_to_num.get(decimal_str, 0) * 0.1
+                        
+                        return float(whole_val + decimal_val)
                 
                 # Try direct conversion
                 try:
@@ -96,7 +89,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
             
             return None
         
-        df['lpi_score'] = df['lpi_score'].apply(parse_lpi_score)
+        for i in range(len(df)):
+            df.loc[i, 'lpi_score'] = parse_lpi_score(df.loc[i, 'lpi_score'])
     
     # 3. Remove duplicates (keep first occurrence)
     # Use country + year as key for deduplication
@@ -105,6 +99,10 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         df = df.drop_duplicates(subset=['country', 'year'], keep='first')
     else:
         df = df.drop_duplicates()
+    
+    # 在 return 之前，確保 lpi_score 真的是 float
+    if 'lpi_score' in df.columns:
+        df['lpi_score'] = pd.to_numeric(df['lpi_score'], errors='coerce')
     
     # 4. Remove rows with invalid lpi_score
     df = df[df['lpi_score'].notna()]

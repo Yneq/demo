@@ -32,5 +32,4 @@ Now convert the following question to SQL:
 
 
 def create_text_to_sql_prompt(question: str) -> str:
-    """Create prompt for text-to-sql conversion."""
     return f"{SYSTEM_PROMPT}\n\nQuestion: {question}\nSQL:"
