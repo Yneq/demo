@@ -1,6 +1,6 @@
 streamlit==1.31.0
 supabase==2.9.0
-postgrest==0.17.3
+postgrest>=0.17.0, <0.18.0
 python-dotenv==1.0.1
 pandas==2.1.4
 requests==2.31.0
